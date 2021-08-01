@@ -1,0 +1,38 @@
+version: "3"
+  
+services:
+  bookstack:
+    image: "yue7090/dochub:v2"
+    container_name: dochub_v2
+    ports:
+      - "8282:8181"
+    restart: always
+    tty: true
+    volumes:
+      - ./src:/var/www/src
+    environment:
+      - GOPATH=/var/www:/var/www/src:/var/www/src/vendor
+      - GOROOT=/usr/local/go
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+      - GOPROXY=https://goproxy.io
+    working_dir: /var/www/src
+    command: go run main.go
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+      - "33075:33075"
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: dochub
+      MINIO_ROOT_PASSWORD: dochub1234 #大于等于8位
+    logging:
+      options:
+        max-size: "50M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    volumes:
+      - ./minio/data:/data 

@@ -1,0 +1,4 @@
+
+minio/data/*
+elasticsearch/data/*
+src/conf/*

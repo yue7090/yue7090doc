@@ -3,7 +3,7 @@ version: "3"
 services:
   bookstack:
     image: "yue7090/dochub:v2"
-    container_name: dochub_v2
+    container_name: dochub
     ports:
       - "8282:8181"
     restart: always
@@ -36,3 +36,17 @@ services:
       driver: json-file
     volumes:
       - ./minio/data:/data 
+  elasticsearch:
+    image: elasticsearch:latest
+    container_name: elasticsearch
+    # -p 9200:9200 -p 9300:9300  -e "discovery.type=single-node" -e ES_JAVA_OPTS="-Xms64m -Xmx128m" -v /mydata/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml -v /mydata/elasticsearch/data:/usr/share/elasticsearch/data -v /mydata/elasticsearch/plugins:/usr/share/elasticsearch/plugins 
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    volumes:
+    #   - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./elasticsearch/data:/usr/share/elasticsearch/data
+      # - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins
